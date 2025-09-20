@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>✨ Editor de Currículo Pro — 1 Página A4</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cor-primaria: #2563eb;
+      --cor-sucesso: #10b981;
+      --cor-perigo: #ef4444;
+      --cor-fundo: #f8fafc;
+      --cor-texto: #1e293b;
+      --cor-borda: #e2e8f0;
+      --cor-hover: #f1f5f9;
+      --sombra: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --transicao: all 0.3s ease;
+    }
+
+    [data-theme="dark"] {
+      --cor-fundo: #0f172a;
+      --cor-texto: #f8fafc;
+      --cor-borda: #334155;
+      --cor-hover: #1e293b;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--cor-texto);
+      background-color: var(--cor-fundo);
+      padding: 20px;
+      transition: var(--transicao);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+    }
+
+    @media (max-width: 900px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .editor, .preview-container {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: var(--sombra);
+      transition: var(--transicao);
+    }
+
+    [data-theme="dark"] .editor,
+    [data-theme="dark"] .preview-container {
+      background: #1e293b;
+      color: var(--cor-texto);
+    }
+
+    h1, h2, h3 {
+      color: var(--cor-primaria);
+      font-weight: 600;
+    }
+
+    h1 {
+      font-size: 24px;
+      text-align: center;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .form-group {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+      font-size: 13px;
+      color: var(--cor-texto);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    label.required::after {
+      content: "*";
+      color: var(--cor-perigo);
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 14px;
+      border: 1px solid var(--cor-borda);
+      border-radius: 8px;
+      background: white;
+      color: var(--cor-texto);
+      transition: var(--transicao);
+    }
+
+    [data-theme="dark"] input,
+    [data-theme="dark"] select,
+    [data-theme="dark"] textarea {
+      background: #334155;
+      color: white;
+      border-color: #475569;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--cor-primaria);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    input.error, select.error, textarea.error {
+      border-color: var(--cor-perigo);
+      background-color: #fef2f2;
+    }
+
+    [data-theme="dark"] input.error,
+    [data-theme="dark"] select.error,
+    [data-theme="dark"] textarea.error {
+      background-color: #451a1a;
+    }
+
+    .error-message {
+      color: var(--cor-perigo);
+      font-size: 12px;
+      margin-top: 4px;
+      display: none;
+    }
+
+    button {
+      background: var(--cor-primaria);
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: var(--transicao);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+      transform: translateY(-2px);
+      box-shadow: var(--sombra);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    #btn-gerar-pdf {
+      background: var(--cor-sucesso);
+    }
+
+    #btn-gerar-pdf:hover {
+      background: #059669;
+    }
+
+    #btn-toggle-theme {
+      background: #64748b;
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    #btn-toggle-theme:hover {
+      background: #475569;
+    }
+
+    .bloco {
+      background: white;
+      border: 2px dashed var(--cor-borda);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      position: relative;
+      cursor: grab;
+      transition: var(--transicao);
+    }
+
+    .bloco:hover {
+      border-color: var(--cor-primaria);
+      background: var(--cor-hover);
+      transform: translateY(-2px);
+    }
+
+    .bloco:active {
+      cursor: grabbing;
+    }
+
+    .bloco-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .bloco-titulo {
+      font-weight: 600;
+      font-size: 16px;
+      color: var(--cor-primaria);
+    }
+
+    .btn-remover-bloco {
+      background: var(--cor-perigo);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 4px 10px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: var(--transicao);
+    }
+
+    .btn-remover-bloco:hover {
+      background: #dc2626;
+    }
+
+    #lista-blocos {
+      min-height: 100px;
+    }
+
+    .drag-handle {
+      cursor: grab;
+      padding: 4px 8px;
+      background: #e2e8f0;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #64748b;
+    }
+
+    [data-theme="dark"] .drag-handle {
+      background: #334155;
+      color: #94a3b8;
+    }
+
+    #btn-adicionar-bloco {
+      background: #0ea5e9;
+      margin-top: 10px;
+    }
+
+    #btn-adicionar-bloco:hover {
+      background: #0284c7;
+    }
+
+    /* CONTROLES DE FONTE */
+    .controles-fonte {
+      background: #f1f5f9;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 20px 0;
+      border: 1px solid var(--cor-borda);
+    }
+
+    [data-theme="dark"] .controles-fonte {
+      background: #334155;
+      border-color: #475569;
+    }
+
+    .slider-container {
+      margin: 15px 0;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--cor-borda);
+      outline: none;
+      -webkit-appearance: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--cor-primaria);
+      cursor: pointer;
+    }
+
+    /* PROGRESSO A4 */
+    .progresso-a4 {
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 4px;
+      margin: 10px 0;
+      overflow: hidden;
+    }
+
+    [data-theme="dark"] .progresso-a4 {
+      background: #334155;
+    }
+
+    .progresso-barra {
+      height: 100%;
+      background: linear-gradient(90deg, var(--cor-sucesso), var(--cor-perigo));
+      border-radius: 4px;
+      transition: width 0.3s ease, background 0.3s ease;
+    }
+
+    .progresso-texto {
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      color: #64748b;
+    }
+
+    /* PREVIEW */
+    .preview-container {
+      position: sticky;
+      top: 20px;
+      height: fit-content;
+      overflow: hidden;
+    }
+
+    .preview-cv {
+      padding: 30px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: var(--sombra);
+      max-width: 100%;
+      transition: var(--transicao);
+      position: relative;
+    }
+
+    [data-theme="dark"] .preview-cv {
+      background: #334155;
+      color: #f8fafc;
+    }
+
+    #foto-preview {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 20px;
+      border: 3px solid var(--cor-borda);
+      box-shadow: var(--sombra);
+    }
+
+    .preview-cv h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+      color: var(--cor-primaria);
+    }
+
+    .info-contato {
+      color: #64748b;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .secao {
+      margin: 25px 0 15px;
+      padding-bottom: 8px;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--cor-primaria);
+      border-bottom: 2px solid var(--cor-primaria);
+    }
+
+    .lista {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .lista li {
+      padding: 8px 0;
+      padding-left: 20px;
+      position: relative;
+      line-height: 1.5;
+    }
+
+    .lista li:before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--cor-primaria);
+      font-weight: bold;
+    }
+
+    /* Modelos */
+    .modelo-moderno .secao {
+      border-bottom: none;
+      border-left: 4px solid #3b82f6;
+      padding-left: 12px;
+    }
+
+    .modelo-executivo {
+      font-family: 'Georgia', serif;
+    }
+
+    .modelo-executivo .secao {
+      border-bottom: 1px solid #cbd5e1;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 16px;
+      color: #000;
+    }
+
+    [data-theme="dark"] .modelo-executivo .secao {
+      color: white;
+    }
+
+    .modelo-designer {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .modelo-designer .secao {
+      color: white;
+      border-bottom-color: rgba(255,255,255,0.3);
+    }
+
+    .modelo-designer .info-contato,
+    .modelo-designer .lista li {
+      color: rgba(255,255,255,0.85);
+    }
+
+    /* LAYOUT DE DUAS COLUNAS (só no modelo designer) */
+    .preview-cv.modelo-colunas #preview-blocos {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .preview-cv.modelo-colunas .secao {
+      grid-column: 1 / -1;
+    }
+
+    /* ANIMAÇÕES */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .preview-cv {
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
+    /* CONTROLES SUPERIORES */
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .modelo-select {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    /* LIVE PREVIEW — SÓ MOSTRA NA TELA, NUNCA NO PDF */
+    .live-indicator {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: var(--cor-sucesso);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.6; }
+      100% { opacity: 1; }
+    }
+
+    /* CLASSE PARA ESCONDER ELEMENTOS NA HORA DE GERAR PDF */
+    .no-print {
+      display: block;
+    }
+
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      padding: 20px;
+      color: #64748b;
+      font-size: 13px;
+    }
+
+    /* AVISOS */
+    .ajuste-fonte-aviso {
+      background: #fef3c7;
+      color: #92400e;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      margin-top: 10px;
+      border-left: 4px solid #f59e0b;
+      display: none;
+    }
+
+    [data-theme="dark"] .ajuste-fonte-aviso {
+      background: #371a08;
+      color: #fbbf24;
+      border-left-color: #fbbf24;
+    }
+
+    .sobrando-espaco {
+      background: #ecfdf5;
+      color: #065f46;
+      border-left-color: #10b981;
+    }
+
+    [data-theme="dark"] .sobrando-espaco {
+      background: #0c2d24;
+      color: #a7f3d0;
+    }
+
+    /* ESTILO TEMPORÁRIO PARA GERAÇÃO DE PDF — ✅ CORRIGIDO */
+    .forca-light {
+      background: white !important;
+      color: #000 !important;
+      filter: none !important;
+      opacity: 1 !important;
+      transition: none !important;
+      animation: none !important;
+    }
+
+    .forca-light .secao,
+    .forca-light h1,
+    .forca-light .bloco-titulo {
+      color: #2563eb !important;
+      text-shadow: none !important;
+    }
+
+    .forca-light .info-contato,
+    .forca-light .lista li {
+      color: #000 !important;
+    }
+
+    .forca-light .lista li:before {
+      color: #2563eb !important;
+    }
+
+    .forca-light img {
+      opacity: 1 !important;
+      filter: none !important;
+      border: 3px solid #ddd !important;
+      box-shadow: none !important;
+    }
+
+    /* MODAL */
+    dialog {
+      border: none;
+      padding: 0;
+      box-shadow: var(--sombra);
+      border-radius: 16px;
+      background: transparent;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="editor">
+      <h1>✨ Editor de Currículo Pro — 1 Página A4</h1>
+      
+      <div class="controls">
+        <select id="modelo-curriculo" class="modelo-select">
+          <option value="classico">📄 Clássico</option>
+          <option value="moderno">🎨 Moderno</option>
+          <option value="executivo">💼 Executivo</option>
+          <option value="designer">🌟 Designer (2 colunas)</option>
+        </select>
+        <button id="btn-toggle-theme">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M6 .278a.768.768 0 0 1 .08.858 7.209 7.209 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
+          </svg>
+          Modo Escuro
+        </button>
+      </div>
+
+      <!-- Foto -->
+      <div class="form-row">
+        <div class="form-group">
+          <label>Foto de Perfil</label>
+          <input type="file" id="foto-perfil" accept="image/*">
+          <div id="preview-foto-container" style="margin-top: 10px;"></div>
+        </div>
+      </div>
+
+      <!-- Informações Pessoais -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="nome" class="required">Nome Completo</label>
+          <input type="text" id="nome" required>
+          <div class="error-message" id="error-nome">Campo obrigatório</div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="endereco" class="required">Endereço</label>
+          <input type="text" id="endereco" required>
+          <div class="error-message" id="error-endereco">Campo obrigatório</div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="telefone" class="required">Telefone</label>
+          <input type="tel" id="telefone" required>
+          <div class="error-message" id="error-telefone">Campo obrigatório</div>
+        </div>
+        <div class="form-group">
+          <label for="email" class="required">Email</label>
+          <input type="email" id="email" required>
+          <div class="error-message" id="error-email">Campo obrigatório</div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="idade" class="required">Idade</label>
+          <input type="number" id="idade" required min="16" max="100">
+          <div class="error-message" id="error-idade">Campo obrigatório</div>
+        </div>
+        <div class="form-group">
+          <label for="estado-civil" class="required">Estado Civil</label>
+          <select id="estado-civil" required>
+            <option value="">Selecione</option>
+            <option value="Solteiro">Solteiro</option>
+            <option value="Casado">Casado</option>
+            <option value="Divorciado">Divorciado</option>
+            <option value="Viúvo">Viúvo</option>
+          </select>
+          <div class="error-message" id="error-estado-civil">Campo obrigatório</div>
+        </div>
+      </div>
+
+      <!-- CONTROLE DE FONTE -->
+      <div class="controles-fonte">
+        <h3>🎚️ Tamanho da Fonte</h3>
+        <div class="slider-container">
+          <input type="range" id="slider-fonte" min="9" max="16" value="14" step="0.5">
+          <div style="display: flex; justify-content: space-between; margin-top: 5px; font-size: 12px;">
+            <span>Pequena</span>
+            <span id="valor-fonte">14px</span>
+            <span>Grande</span>
+          </div>
+        </div>
+
+        <!-- PROGRESSO A4 -->
+        <h3>📊 Uso da Página A4</h3>
+        <div class="progresso-a4">
+          <div class="progresso-barra" id="barra-progresso" style="width: 0%;"></div>
+        </div>
+        <div class="progresso-texto">
+          <span id="percentual-uso">0%</span>
+          <span><strong>Limite: 100%</strong></span>
+        </div>
+        <div class="ajuste-fonte-aviso" id="aviso-fonte">
+          ⚠️ Ajuste o tamanho da fonte para caber tudo em 1 página!
+        </div>
+      </div>
+
+      <!-- BLOCOS DINÂMICOS -->
+      <h3>Seções do Currículo <span class="drag-handle">↕️ Arraste para reordenar</span></h3>
+      <div id="lista-blocos"></div>
+      <button type="button" id="btn-adicionar-bloco">➕ Adicionar Nova Seção</button>
+    </div>
+
+    <div class="preview-container">
+      <div class="preview-cv" id="preview-cv">
+        <!-- ✅ ÍCONE DE "PRÉVIA AO VIVO" — NUNCA APARECE NO PDF -->
+        <div class="live-indicator no-print">
+          <div style="width: 8px; height: 8px; background: white; border-radius: 50%;"></div>
+          Prévia ao vivo
+        </div>
+        <img id="foto-preview" style="display:none; float: right; margin-left: 20px; margin-bottom: 10px;">
+        <h1 id="nome-preview">Seu Nome Aqui</h1>
+        <div class="info-contato" id="contato-preview">Endereço • Telefone • Email</div>
+        <div id="preview-blocos"></div>
+        <!-- ✅ BOTÃO DE PDF — SERÁ ESCONDIDO DURANTE A GERAÇÃO -->
+        <button id="btn-gerar-pdf" class="no-print" style="margin-top: 20px; width: 100%;">📄 Baixar como PDF (1 página A4)</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="no-print">
+    © 2025 Editor de Currículo Pro • Tudo cabe em 1 página A4 • Salvo automaticamente
+  </footer>
+
+  <!-- Bibliotecas -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+  <script>
+    // Elementos
+    const fotoInput = document.getElementById('foto-perfil');
+    const fotoPreview = document.getElementById('foto-preview');
+    const fotoContainer = document.getElementById('preview-foto-container');
+    const modeloSelect = document.getElementById('modelo-curriculo');
+    const previewCV = document.getElementById('preview-cv');
+    const btnGerarPDF = document.getElementById('btn-gerar-pdf');
+    const listaBlocos = document.getElementById('lista-blocos');
+    const previewBlocos = document.getElementById('preview-blocos');
+    const themeToggle = document.getElementById('btn-toggle-theme');
+    const avisoFonte = document.getElementById('aviso-fonte');
+    const sliderFonte = document.getElementById('slider-fonte');
+    const valorFonte = document.getElementById('valor-fonte');
+    const barraProgresso = document.getElementById('barra-progresso');
+    const percentualUso = document.getElementById('percentual-uso');
+
+    // Constantes
+    const ALTURA_MAXIMA_A4_MM = 277;
+    const PIXELS_POR_MM = 3.78;
+
+    // Tipos de blocos
+    const tiposBloco = [
+      { tipo: 'formacao', titulo: 'Formação Acadêmica', placeholder: '• Graduação em Engenharia de Software - UNESP (2020-2024)' },
+      { tipo: 'experiencia', titulo: 'Experiência Profissional', placeholder: '• Desenvolvedor Front-end na TechCorp (2022-2024)' },
+      { tipo: 'qualificacoes', titulo: 'Qualificações', placeholder: '• HTML5, CSS3, JavaScript ES6+, React.js' },
+      { tipo: 'informacoes', titulo: 'Informações Adicionais', placeholder: '• Disponibilidade para viagens e mudanças' },
+      { tipo: 'idiomas', titulo: 'Idiomas', placeholder: '• Inglês - Avançado (TOEFL 95)\n• Espanhol - Intermediário' },
+      { tipo: 'projetos', titulo: 'Projetos Destacados', placeholder: '• Sistema de Gestão Escolar - React + Node.js\n• App de Delivery - Flutter' },
+      { tipo: 'certificacoes', titulo: 'Certificações', placeholder: '• AWS Certified Developer\n• Google UX Design Professional' },
+      { tipo: 'habilidades', titulo: 'Habilidades Técnicas', placeholder: '• Front-end: React, Vue, Svelte\n• Back-end: Node.js, Python, Java' }
+    ];
+
+    // Inicializa Sortable
+    new Sortable(listaBlocos, {
+      animation: 200,
+      handle: '.bloco-header',
+      ghostClass: 'placeholder',
+      onEnd: atualizarPreviewDebounced
+    });
+
+    // Tema escuro
+    themeToggle.addEventListener('click', () => {
+      const novoTema = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      document.body.setAttribute('data-theme', novoTema);
+      themeToggle.innerHTML = novoTema === 'dark'
+        ? '<svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/></svg> Modo Claro'
+        : '<svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M6 .278a.768.768 0 0 1 .08.858 7.209 7.209 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/></svg> Modo Escuro';
+      salvarRascunho();
+    });
+
+    // Slider de fonte
+    sliderFonte.addEventListener('input', function() {
+      valorFonte.textContent = this.value + 'px';
+      atualizarPreviewDebounced();
+    });
+
+    // 👇 DEBOUNCE
+    let debounceTimer;
+    function atualizarPreviewDebounced() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(atualizarPreview, 300);
+    }
+
+    // Carregar rascunho
+    window.addEventListener('load', carregarRascunho);
+
+    // Criar novo bloco
+    function criarBloco(tipo, titulo, conteudo = '') {
+      const bloco = document.createElement('div');
+      bloco.className = 'bloco';
+      bloco.dataset.tipo = tipo;
+
+      bloco.innerHTML = `
+        <div class="bloco-header">
+          <div class="bloco-titulo">${titulo}</div>
+          <button class="btn-remover-bloco" type="button" title="Remover seção">×</button>
+        </div>
+        <textarea rows="4" placeholder="${tiposBloco.find(t => t.tipo === tipo)?.placeholder || 'Digite o conteúdo...'}" style="width: 100%; padding: 10px; font-size: 14px; border: 1px solid var(--cor-borda); border-radius: 8px;">${conteudo}</textarea>
+      `;
+
+      bloco.querySelector('.btn-remover-bloco').addEventListener('click', function() {
+        bloco.remove();
+        salvarRascunho();
+        atualizarPreviewDebounced();
+      });
+
+      bloco.querySelector('textarea').addEventListener('input', () => {
+        salvarRascunho();
+        atualizarPreviewDebounced();
+      });
+
+      listaBlocos.appendChild(bloco);
+      return bloco;
+    }
+
+    // Adicionar novo bloco — MODAL MODERNO
+    document.getElementById('btn-adicionar-bloco').addEventListener('click', function() {
+      const modal = document.createElement('div');
+      modal.style.position = 'fixed';
+      modal.style.top = '0';
+      modal.style.left = '0';
+      modal.style.width = '100vw';
+      modal.style.height = '100vh';
+      modal.style.backgroundColor = 'rgba(0,0,0,0.5)';
+      modal.style.display = 'flex';
+      modal.style.alignItems = 'center';
+      modal.style.justifyContent = 'center';
+      modal.style.zIndex = '1000';
+      modal.classList.add('no-print');
+
+      modal.innerHTML = `
+        <div style="background: var(--cor-fundo); padding: 30px; border-radius: 16px; box-shadow: var(--sombra); max-width: 400px; width: 90%; text-align: center; position: relative;">
+          <span style="position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #94a3b8;" id="btn-fechar-modal">&times;</span>
+          <h3 style="margin-bottom: 20px; color: var(--cor-primaria);">➕ Escolha o tipo de seção</h3>
+          <select id="select-tipo-bloco" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--cor-borda); margin-bottom: 20px; font-size: 14px; background: white; color: var(--cor-texto);">
+            ${tiposBloco.map(tipo => `<option value="${tipo.tipo}">${tipo.titulo}</option>`).join('')}
+          </select>
+          <div style="display: flex; gap: 10px; justify-content: center;">
+            <button id="btn-confirmar-bloco" style="flex: 1; background: var(--cor-sucesso); color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">Adicionar</button>
+            <button id="btn-cancelar-bloco" style="flex: 1; background: #64748b; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">Cancelar</button>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(modal);
+
+      const select = modal.querySelector('#select-tipo-bloco');
+      const btnConfirmar = modal.querySelector('#btn-confirmar-bloco');
+      const btnCancelar = modal.querySelector('#btn-cancelar-bloco');
+      const btnFechar = modal.querySelector('#btn-fechar-modal');
+
+      btnConfirmar.addEventListener('click', () => {
+        const tipoSelecionado = tiposBloco.find(t => t.tipo === select.value) || tiposBloco[0];
+        criarBloco(tipoSelecionado.tipo, tipoSelecionado.titulo, '');
+        salvarRascunho();
+        atualizarPreviewDebounced();
+        modal.remove();
+      });
+
+      [btnCancelar, btnFechar].forEach(btn => {
+        btn.addEventListener('click', () => {
+          modal.remove();
+        });
+      });
+
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.remove();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') modal.remove();
+      }, { once: true });
+    });
+
+    // Validação
+    const requiredFields = ['nome', 'endereco', 'telefone', 'email', 'idade', 'estado-civil'];
+
+    function validateField(fieldId) {
+      const field = document.getElementById(fieldId);
+      const error = document.getElementById(`error-${fieldId}`);
+
+      if (!field.value.trim()) {
+        field.classList.add('error');
+        error.textContent = 'Campo obrigatório';
+        error.style.display = 'block';
+        return false;
+      }
+
+      if (fieldId === 'email') {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(field.value)) {
+          field.classList.add('error');
+          error.textContent = 'E-mail inválido';
+          error.style.display = 'block';
+          return false;
+        }
+      }
+
+      if (fieldId === 'telefone') {
+        const phoneValue = field.value.replace(/\D/g, '');
+        if (phoneValue.length < 10) {
+          field.classList.add('error');
+          error.textContent = 'Telefone inválido (mín. 10 dígitos)';
+          error.style.display = 'block';
+          return false;
+        }
+      }
+
+      field.classList.remove('error');
+      error.style.display = 'none';
+      return true;
+    }
+
+    requiredFields.forEach(field => {
+      const input = document.getElementById(field);
+      input.addEventListener('blur', () => validateField(field));
+      input.addEventListener('input', () => {
+        validateField(field);
+        atualizarPreviewDebounced();
+      });
+    });
+
+    // 👇 CALCULAR PROGRESSO
+    function calcularProgressoEAtualizarUI() {
+      const alturaPixels = previewCV.scrollHeight;
+      const alturaMm = alturaPixels / PIXELS_POR_MM;
+      const porcentagem = Math.min(100, Math.round((alturaMm / ALTURA_MAXIMA_A4_MM) * 100));
+
+      barraProgresso.style.width = porcentagem + '%';
+      percentualUso.textContent = porcentagem + '%';
+
+      if (porcentagem < 80) {
+        barraProgresso.style.background = 'linear-gradient(90deg, #10b981, #3b82f6)';
+        avisoFonte.style.display = 'none';
+      } else if (porcentagem < 100) {
+        barraProgresso.style.background = 'linear-gradient(90deg, #f59e0b, #ef4444)';
+        avisoFonte.textContent = '⚠️ Está quase extrapolando! Reduza o texto ou diminua a fonte.';
+        avisoFonte.style.display = 'block';
+      } else {
+        barraProgresso.style.background = '#ef4444';
+        avisoFonte.textContent = '❌ EXCEDEU O LIMITE! Diminua a fonte ou reduza o conteúdo.';
+        avisoFonte.style.display = 'block';
+      }
+
+      if (porcentagem < 50) {
+        avisoFonte.textContent = '✅ Você tem espaço livre! Pode aumentar a fonte ou adicionar mais conteúdo.';
+        avisoFonte.classList.add('sobrando-espaco');
+        avisoFonte.style.display = 'block';
+      } else {
+        avisoFonte.classList.remove('sobrando-espaco');
+      }
+    }
+
+    // Atualizar preview
+    function atualizarPreview() {
+      let isValid = true;
+      requiredFields.forEach(field => {
+        if (!validateField(field)) isValid = false;
+      });
+
+      if (!isValid) return;
+
+      const nome = document.getElementById('nome').value.trim() || 'Seu Nome Aqui';
+      const endereco = document.getElementById('endereco').value.trim();
+      const telefone = document.getElementById('telefone').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const idade = document.getElementById('idade').value.trim();
+      const estadoCivil = document.getElementById('estado-civil').value.trim();
+      const modelo = modeloSelect.value;
+      const fontSize = sliderFonte.value;
+
+      previewCV.className = 'preview-cv';
+      if (modelo === 'moderno') {
+        previewCV.classList.add('modelo-moderno');
+      } else if (modelo === 'executivo') {
+        previewCV.classList.add('modelo-executivo');
+      } else if (modelo === 'designer') {
+        previewCV.classList.add('modelo-designer');
+        previewCV.classList.add('modelo-colunas');
+      } else {
+        previewCV.classList.remove('modelo-colunas');
+      }
+
+      previewCV.style.fontSize = fontSize + 'px';
+
+      document.getElementById('nome-preview').textContent = nome;
+      document.getElementById('contato-preview').innerHTML =
+        `${endereco}<br>${telefone} • ${email}<br>Idade: ${idade} anos • Estado Civil: ${estadoCivil}`;
+
+      previewBlocos.innerHTML = '';
+
+      const blocos = listaBlocos.querySelectorAll('.bloco');
+      blocos.forEach(bloco => {
+        const tipo = bloco.dataset.tipo;
+        const titulo = bloco.querySelector('.bloco-titulo').textContent;
+        const conteudo = bloco.querySelector('textarea').value;
+
+        if (conteudo.trim()) {
+          const divSecao = document.createElement('div');
+          divSecao.className = 'secao';
+          divSecao.textContent = titulo;
+
+          const ul = document.createElement('ul');
+          ul.className = 'lista';
+
+          const itens = conteudo.split('\n')
+            .map(item => item.trim())
+            .filter(item => item)
+            .map(item => `<li>${item}</li>`)
+            .join('');
+
+          ul.innerHTML = itens || '<li>Não informado</li>';
+
+          previewBlocos.appendChild(divSecao);
+          previewBlocos.appendChild(ul);
+        }
+      });
+
+      setTimeout(calcularProgressoEAtualizarUI, 100);
+      salvarRascunho();
+    }
+
+    // Salvar rascunho
+    function salvarRascunho() {
+      const dados = {
+        nome: document.getElementById('nome').value,
+        endereco: document.getElementById('endereco').value,
+        telefone: document.getElementById('telefone').value,
+        email: document.getElementById('email').value,
+        idade: document.getElementById('idade').value,
+        estadoCivil: document.getElementById('estado-civil').value,
+        modelo: modeloSelect.value,
+        foto: fotoPreview.src,
+        fontSize: sliderFonte.value,
+        tema: document.body.getAttribute('data-theme') || 'light',
+        blocos: []
+      };
+
+      const blocos = listaBlocos.querySelectorAll('.bloco');
+      blocos.forEach(bloco => {
+        const tipo = bloco.dataset.tipo;
+        const titulo = bloco.querySelector('.bloco-titulo').textContent;
+        const textarea = bloco.querySelector('textarea');
+        dados.blocos.push({
+          tipo,
+          titulo,
+          conteudo: textarea.value
+        });
+      });
+
+      localStorage.setItem('rascunhoCurriculo', JSON.stringify(dados));
+    }
+
+    function carregarRascunho() {
+      const salvos = localStorage.getItem('rascunhoCurriculo');
+      if (salvos) {
+        const dados = JSON.parse(salvos);
+
+        document.getElementById('nome').value = dados.nome || '';
+        document.getElementById('endereco').value = dados.endereco || '';
+        document.getElementById('telefone').value = dados.telefone || '';
+        document.getElementById('email').value = dados.email || '';
+        document.getElementById('idade').value = dados.idade || '';
+        document.getElementById('estado-civil').value = dados.estadoCivil || '';
+        modeloSelect.value = dados.modelo || 'classico';
+        sliderFonte.value = dados.fontSize || 14;
+        valorFonte.textContent = sliderFonte.value + 'px';
+
+        if (dados.tema) {
+          document.body.setAttribute('data-theme', dados.tema);
+          themeToggle.innerHTML = dados.tema === 'dark'
+            ? '<svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/></svg> Modo Claro'
+            : '<svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M6 .278a.768.768 0 0 1 .08.858 7.209 7.209 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/></svg> Modo Escuro';
+        }
+
+        if (dados.foto) {
+          fotoPreview.src = dados.foto;
+          fotoPreview.style.display = 'block';
+          const img = document.createElement('img');
+          img.src = dados.foto;
+          img.style.width = '60px';
+          img.style.height = '60px';
+          img.style.borderRadius = '50%';
+          img.style.objectFit = 'cover';
+          img.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+          fotoContainer.innerHTML = '';
+          fotoContainer.appendChild(img);
+        }
+
+        listaBlocos.innerHTML = '';
+        if (dados.blocos && dados.blocos.length > 0) {
+          dados.blocos.forEach(bloco => {
+            criarBloco(bloco.tipo, bloco.titulo, bloco.conteudo);
+          });
+        } else {
+          criarBloco('formacao', 'Formação Acadêmica', '');
+          criarBloco('experiencia', 'Experiência Profissional', '');
+          criarBloco('qualificacoes', 'Qualificações', '');
+        }
+      } else {
+        criarBloco('formacao', 'Formação Acadêmica', '');
+        criarBloco('experiencia', 'Experiência Profissional', '');
+        criarBloco('qualificacoes', 'Qualificações', '');
+      }
+
+      setTimeout(atualizarPreview, 100);
+    }
+
+    modeloSelect.addEventListener('change', atualizarPreviewDebounced);
+
+    fotoInput.addEventListener('change', function() {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          fotoPreview.src = e.target.result;
+          fotoPreview.style.display = 'block';
+          salvarRascunho();
+          atualizarPreviewDebounced();
+        };
+        reader.readAsDataURL(file);
+
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(file);
+        img.style.width = '60px';
+        img.style.height = '60px';
+        img.style.borderRadius = '50%';
+        img.style.objectFit = 'cover';
+        img.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+        fotoContainer.innerHTML = '';
+        fotoContainer.appendChild(img);
+      } else {
+        fotoPreview.style.display = 'none';
+        fotoContainer.innerHTML = '';
+        salvarRascunho();
+        atualizarPreviewDebounced();
+      }
+    });
+
+    // 👇 GERAR PDF — VERSÃO DEFINITIVA E CORRIGIDA ✅
+    async function gerarPDF() {
+      const originalBtnText = btnGerarPDF.innerHTML;
+      btnGerarPDF.innerHTML = '⏳ Gerando PDF profissional...';
+      btnGerarPDF.disabled = true;
+
+      // 👇 ELEMENTOS QUE PRECISAM SER ESCONDIDOS/MODIFICADOS
+      const liveIndicator = document.querySelector('.live-indicator');
+      const footer = document.querySelector('footer');
+      const fotoPreview = document.getElementById('foto-preview');
+
+      try {
+        // 1. ESCONDE elementos que não devem aparecer no PDF
+        if (liveIndicator) liveIndicator.style.display = 'none';
+        if (footer) footer.style.display = 'none';
+        btnGerarPDF.style.display = 'none';
+
+        // 2. FORÇA tema claro e remove transições/filtros
+        previewCV.classList.add('forca-light');
+        document.body.setAttribute('data-theme', 'light');
+        
+        // 👉 FORÇA ESTILOS INLINE NA FOTO PARA EVITAR OPACIDADE
+        if (fotoPreview && fotoPreview.src) {
+          fotoPreview.style.opacity = '1';
+          fotoPreview.style.filter = 'none';
+          fotoPreview.style.boxShadow = 'none';
+          fotoPreview.style.border = '3px solid #cccccc';
+        }
+
+        // 3. Remove transições temporariamente para captura limpa
+        previewCV.style.transition = 'none';
+        previewCV.style.animation = 'none';
+
+        // 4. Pequeno delay para garantir que os estilos foram aplicados
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        // 5. Gera o canvas
+        const { jsPDF } = window.jspdf;
+        const canvas = await html2canvas(previewCV, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: '#ffffff',
+          scrollY: -window.scrollY,
+          windowWidth: previewCV.scrollWidth,
+          windowHeight: previewCV.scrollHeight,
+          allowTaint: false,
+          logging: false
+        });
+
+        // 6. Cria PDF com margens
+        const pdf = new jsPDF({
+          orientation: 'portrait',
+          unit: 'mm',
+          format: 'a4'
+        });
+
+        const imgData = canvas.toDataURL('image/png');
+        const margin = 10;
+        const imgWidth = 210 - margin * 2;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        let drawHeight = imgHeight;
+        let drawWidth = imgWidth;
+
+        if (imgHeight > 297 - margin * 2) {
+          const ratio = (297 - margin * 2) / imgHeight;
+          drawHeight = 297 - margin * 2;
+          drawWidth = imgWidth * ratio;
+        }
+
+        pdf.addImage(
+          imgData,
+          'PNG',
+          margin,
+          margin,
+          drawWidth,
+          drawHeight,
+          undefined,
+          'FAST'
+        );
+
+        // 7. Salva o PDF
+        pdf.save(`${document.getElementById('nome').value.trim() || 'curriculo'}.pdf`);
+
+      } catch (error) {
+        alert('Erro ao gerar PDF: ' + error.message);
+      } finally {
+        // 8. 👇 RESTAURA TUDO
+        if (liveIndicator) liveIndicator.style.display = 'flex';
+        if (footer) footer.style.display = 'block';
+        btnGerarPDF.style.display = 'block';
+
+        previewCV.classList.remove('forca-light');
+        atualizarPreview(); // restaura tema e estilos originais
+
+        // Restaura estilos da foto
+        if (fotoPreview && fotoPreview.src) {
+          fotoPreview.style.opacity = '';
+          fotoPreview.style.filter = '';
+          fotoPreview.style.boxShadow = '';
+          fotoPreview.style.border = '';
+        }
+
+        btnGerarPDF.innerHTML = originalBtnText;
+        btnGerarPDF.disabled = false;
+      }
+    }
+
+    btnGerarPDF.addEventListener('click', gerarPDF);
+  </script>
+</body>
+</html>
